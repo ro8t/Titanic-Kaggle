@@ -1,0 +1,7 @@
+# Local files/folders
+*.zip
+/titanic
+
+# Others
+.DS_Store
+.idea/
