@@ -1,6 +1,8 @@
 # > Dependencies
 import pandas as pd
 from tabulate import tabulate
+import matplotlib.pyplot as plt
+from sklearn import tree, model_selection, linear_model
 
 # > Load all datasets into df's
 gender_submission = pd.read_csv("titanic/gender_submission.csv")
@@ -95,11 +97,52 @@ print(f"There are {different_cabins} number of cabins.")
 print()
 
 # > New df with relevant columns
-keeping = ["PassengerId", "Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Cabin"]
-titanic_df = train_df[keeping]
+features = ["PassengerId", "Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Cabin"]
+titanic_df = train_df[features]
 print("Simplified df: ")
 print(titanic_df.head())
 print()
+print(titanic_df.count())
+
+# > Visualizing data
+# plt.subplots(2, 2, constrained_layout=True)
+plt.subplot2grid((2, 3), (0, 0))
+train_df["Survived"].value_counts(normalize=True).plot(kind="bar", alpha=0.5)
+plt.title("Survived")
+
+plt.subplot2grid((2, 3), (0, 1))
+plt.scatter(train_df["Survived"], train_df["Age"], alpha=0.1)
+plt.title("Survived vs. Age")
+
+plt.subplot2grid((2, 3), (0, 2))
+train_df["Pclass"].value_counts(normalize=True).plot(kind="bar", alpha=0.5)
+plt.title("Class")
+
+# plt.subplot2grid((2, 3), (1, 0), colspan=2)
+# for x in [1, 2, 3]:
+#       train_df[["Age", "Pclass"]].groupby("Pclass").plot(kind="kde")
+# plt.title("Class vs. Age")
+
+plt.subplot2grid((2, 3), (1, 0))
+plt.scatter(train_df["Survived"], train_df["Pclass"], alpha=0.1)
+plt.title("Survived vs. Class")
+
+plt.subplot2grid((2, 3), (1, 1))
+plt.scatter(train_df["Age"], train_df["Pclass"], alpha=0.1)
+plt.title("Age vs. Class")
+
+plt.subplot2grid((2, 3), (1, 2))
+plt.scatter(train_df["Survived"], train_df["SibSp"], alpha=0.1)
+plt.title("Survived vs. Num Siblings/Spouses")
 
 
+plt.tight_layout()
+plt.show()
+
+# > Replacing non-numeric variables with numeric values
+cabin_fill = titanic_df["Cabin"].values
+
+
+def clean_data(data):
+      data["Age"] = data["Age"].fillna(data["Age"].dropna().median())
 
